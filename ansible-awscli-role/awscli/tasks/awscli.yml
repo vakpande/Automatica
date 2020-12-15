@@ -1,0 +1,27 @@
+---
+
+- block:
+
+  - name: install awscli
+    apt: name="awscli" state=present
+    become_user: root
+
+  - name: Create .aws directory in the home directory
+    file:
+        path: "/home/{{ansible_ssh_user}}/.aws/"
+        state: directory
+        owner: "{{ansible_ssh_user}}"
+        group: "{{ansible_ssh_user}}"
+        mode: 0755
+
+  - name: Copy the aws config file to the box
+    become_user: root
+    template:
+        src: aws_config.j2
+        dest: "/home/{{ansible_ssh_user}}/.aws/config"
+        owner: "{{ansible_ssh_user}}"
+        group: "{{ansible_ssh_user}}"
+        mode: 0600
+
+  tags:
+   - awscli
